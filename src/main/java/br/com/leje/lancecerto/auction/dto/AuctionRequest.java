@@ -1,14 +1,35 @@
 package br.com.leje.lancecerto.auction.dto;
 
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.Instant;
 
 public record AuctionRequest(
+        @NotBlank(message = "O título é obrigatório")
         String title,
+
         String description,
+
+        @NotBlank(message = "O comitente é obrigatório")
         String principal,
+
+        @NotNull(message = "A data de início é obrigatória")
+        @FutureOrPresent(message = "A data de início não pode estar no passado")
         Instant startDate,
+
+        @NotNull(message = "A data de término é obrigatória")
+        @FutureOrPresent(message = "A data de término não pode estar no passado")
         Instant endDate
 ) {
+    @AssertTrue(message = "A data de término deve ser posterior à de início")
+    public boolean isEndDate() {
+        if (startDate == null || endDate == null) return true;
+
+        return endDate.isAfter(startDate);
+    }
 }
 
 /*
