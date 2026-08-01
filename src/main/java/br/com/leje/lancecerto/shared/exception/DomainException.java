@@ -1,7 +1,14 @@
 package br.com.leje.lancecerto.shared.exception;
 
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
 public abstract class DomainException extends RuntimeException {
-    protected DomainException(String message) {
+    private final HttpStatus status;
+
+    protected DomainException(HttpStatus status, String message) {
         super(message);
+        this.status = status;
     }
 }
