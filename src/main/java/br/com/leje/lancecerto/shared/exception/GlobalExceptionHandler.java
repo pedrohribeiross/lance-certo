@@ -32,17 +32,7 @@ public class GlobalExceptionHandler {
                         Optional.ofNullable(err.getDefaultMessage()).orElse("Campo inválido")))
                 .toList();
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        ErrorResponse body = new ErrorResponse(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                "Um ou mais campos estão inválidos",
-                validationErrors
-        );
-
-        return ResponseEntity.status(status).body(body);
+        return build(HttpStatus.BAD_REQUEST, "Um ou mais campos estão inválidos", validationErrors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -68,16 +58,21 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro inesperado. Tente novamente mais tarde");
     }
 
+    private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
+        return build(status, message, null);
+    }
+
     private ResponseEntity<ErrorResponse> build(
             HttpStatus status,
-            String message
+            String message,
+            List<ValidationError> fieldErrors
     ) {
         ErrorResponse body = new ErrorResponse(
                 Instant.now(),
                 status.value(),
                 status.getReasonPhrase(),
                 message,
-                null
+                fieldErrors
         );
 
         return ResponseEntity.status(status).body(body);
