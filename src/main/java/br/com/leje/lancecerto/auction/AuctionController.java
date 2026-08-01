@@ -1,6 +1,5 @@
-package br.com.leje.lancecerto;
+package br.com.leje.lancecerto.auction;
 
-import br.com.leje.lancecerto.auction.AuctionService;
 import br.com.leje.lancecerto.auction.dto.AuctionRequest;
 import br.com.leje.lancecerto.auction.dto.AuctionResponse;
 import lombok.RequiredArgsConstructor;
