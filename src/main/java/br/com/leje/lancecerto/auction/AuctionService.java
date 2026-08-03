@@ -34,4 +34,11 @@ public class AuctionService {
     public Auction findByIdOrThrow(UUID id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Leilão"));
     }
+
+    public void delete(UUID id) {
+        Auction auction = findByIdOrThrow(id);
+        // TODO Fase Lot: bloquear 409 se houver lotes vinculados
+
+        repository.delete(auction);
+    }
 }
