@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +21,11 @@ public class AuctionController {
     @PostMapping
     public ResponseEntity<AuctionResponse> create(@RequestBody @Valid AuctionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AuctionResponse>> getAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("{id}")

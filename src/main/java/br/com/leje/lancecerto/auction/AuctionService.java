@@ -6,6 +6,7 @@ import br.com.leje.lancecerto.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,6 +25,10 @@ public class AuctionService {
     public AuctionResponse findById(UUID id) {
         Auction auction = findByIdOrThrow(id);
         return mapper.toResponse(auction);
+    }
+
+    public List<AuctionResponse> findAll() {
+        return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
     public Auction findByIdOrThrow(UUID id) {
