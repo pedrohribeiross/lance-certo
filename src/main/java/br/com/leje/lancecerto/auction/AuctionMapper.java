@@ -34,4 +34,18 @@ public class AuctionMapper {
                 auction.getStatus()
         );
     }
+
+    public void updateEntity(AuctionRequest request, Auction auction) {
+        if (request != null) {
+            if(request.title() != null) auction.setTitle(request.title());
+
+            if(request.description() != null) auction.setDescription(request.description());
+
+            if(request.principal() != null) auction.setPrincipal(request.principal());
+
+            if(request.startDate() != null) auction.setStartDate(request.startDate());
+
+            if(request.endDate() != null) auction.setEndDate(request.endDate());
+        }
+    }
 }

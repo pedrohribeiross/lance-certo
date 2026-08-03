@@ -35,6 +35,13 @@ public class AuctionService {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Leilão"));
     }
 
+    public AuctionResponse update(UUID id, AuctionRequest request) {
+        Auction auction = findByIdOrThrow(id);
+        mapper.updateEntity(request, auction);
+
+        return mapper.toResponse(repository.save(auction));
+    }
+
     public void delete(UUID id) {
         Auction auction = findByIdOrThrow(id);
         // TODO Fase Lot: bloquear 409 se houver lotes vinculados

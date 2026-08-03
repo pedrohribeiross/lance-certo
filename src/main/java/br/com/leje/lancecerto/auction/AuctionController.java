@@ -33,6 +33,11 @@ public class AuctionController {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<AuctionResponse> update(@PathVariable UUID id, @RequestBody @Valid AuctionRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
