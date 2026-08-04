@@ -6,6 +6,7 @@ import br.com.leje.lancecerto.auction.dto.AuctionUpdateStatusRequest;
 import br.com.leje.lancecerto.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class AuctionService {
         return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
+    @Transactional
     public AuctionResponse update(UUID id, AuctionRequest request) {
         Auction auction = findByIdOrThrow(id);
         mapper.updateEntity(request, auction);
@@ -39,6 +41,7 @@ public class AuctionService {
         return mapper.toResponse(repository.save(auction));
     }
 
+    @Transactional
     public AuctionResponse updateStatus(UUID id, AuctionUpdateStatusRequest request) {
         Auction auction = findByIdOrThrow(id);
         auction.setStatus(request.status());
@@ -46,6 +49,7 @@ public class AuctionService {
         return mapper.toResponse(repository.save(auction));
     }
 
+    @Transactional
     public void delete(UUID id) {
         Auction auction = findByIdOrThrow(id);
         // TODO Fase Lot: bloquear 409 se houver lotes vinculados
