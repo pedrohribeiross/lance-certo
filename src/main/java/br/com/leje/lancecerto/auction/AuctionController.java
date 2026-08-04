@@ -2,6 +2,7 @@ package br.com.leje.lancecerto.auction;
 
 import br.com.leje.lancecerto.auction.dto.AuctionRequest;
 import br.com.leje.lancecerto.auction.dto.AuctionResponse;
+import br.com.leje.lancecerto.auction.dto.AuctionUpdateStatusRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,11 @@ public class AuctionController {
     @PutMapping("{id}")
     public ResponseEntity<AuctionResponse> update(@PathVariable UUID id, @RequestBody @Valid AuctionRequest request) {
         return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @PatchMapping("{id}/status")
+    public ResponseEntity<AuctionResponse> updateStatus(@PathVariable UUID id, @RequestBody AuctionUpdateStatusRequest request) {
+        return ResponseEntity.ok(service.updateStatus(id, request));
     }
 
     @DeleteMapping("{id}")

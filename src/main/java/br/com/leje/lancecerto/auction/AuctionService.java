@@ -2,6 +2,7 @@ package br.com.leje.lancecerto.auction;
 
 import br.com.leje.lancecerto.auction.dto.AuctionRequest;
 import br.com.leje.lancecerto.auction.dto.AuctionResponse;
+import br.com.leje.lancecerto.auction.dto.AuctionUpdateStatusRequest;
 import br.com.leje.lancecerto.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,13 @@ public class AuctionService {
     public AuctionResponse update(UUID id, AuctionRequest request) {
         Auction auction = findByIdOrThrow(id);
         mapper.updateEntity(request, auction);
+
+        return mapper.toResponse(repository.save(auction));
+    }
+
+    public AuctionResponse updateStatus(UUID id, AuctionUpdateStatusRequest request) {
+        Auction auction = findByIdOrThrow(id);
+        auction.setStatus(request.status());
 
         return mapper.toResponse(repository.save(auction));
     }
