@@ -32,10 +32,6 @@ public class AuctionService {
         return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
-    public Auction findByIdOrThrow(UUID id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Leilão"));
-    }
-
     public AuctionResponse update(UUID id, AuctionRequest request) {
         Auction auction = findByIdOrThrow(id);
         mapper.updateEntity(request, auction);
@@ -55,5 +51,9 @@ public class AuctionService {
         // TODO Fase Lot: bloquear 409 se houver lotes vinculados
 
         repository.delete(auction);
+    }
+
+    public Auction findByIdOrThrow(UUID id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Leilão"));
     }
 }
