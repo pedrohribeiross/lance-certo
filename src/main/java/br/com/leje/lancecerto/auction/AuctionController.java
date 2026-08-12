@@ -25,8 +25,8 @@ public class AuctionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AuctionResponse>> getAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<AuctionResponse>> getAll(@RequestParam(value = "status", required = false) AuctionStatus status) {
+        return ResponseEntity.ok(service.findAll(status));
     }
 
     @GetMapping("{id}")

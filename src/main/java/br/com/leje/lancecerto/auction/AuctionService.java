@@ -32,8 +32,8 @@ public class AuctionService {
         return mapper.toResponse(auction);
     }
 
-    public List<AuctionResponse> findAll() {
-        return repository.findAll().stream().map(mapper::toResponse).toList();
+    public List<AuctionResponse> findAll(AuctionStatus status) {
+        return repository.findAllByStatusFilter(status).stream().map(mapper::toResponse).toList();
     }
 
     @Transactional
