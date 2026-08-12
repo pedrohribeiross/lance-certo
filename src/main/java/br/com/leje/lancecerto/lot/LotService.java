@@ -2,11 +2,13 @@ package br.com.leje.lancecerto.lot;
 
 import br.com.leje.lancecerto.auction.Auction;
 import br.com.leje.lancecerto.auction.AuctionService;
+import br.com.leje.lancecerto.bid.BidRepository;
 import br.com.leje.lancecerto.category.Category;
 import br.com.leje.lancecerto.category.CategoryService;
 import br.com.leje.lancecerto.lot.dto.LotCreateRequest;
 import br.com.leje.lancecerto.lot.dto.LotResponse;
 import br.com.leje.lancecerto.lot.dto.LotUpdateRequest;
+import br.com.leje.lancecerto.shared.exception.LotHasBidsException;
 import br.com.leje.lancecerto.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class LotService {
     private final CategoryService categoryService;
     private final AuctionService auctionService;
     private final LotMapper mapper;
+    private final BidRepository bidRepository;
 
     @Transactional
     public LotResponse create(UUID auctionId, LotCreateRequest request) {
@@ -45,8 +48,7 @@ public class LotService {
     @Transactional
     public LotResponse update(UUID id, LotUpdateRequest request) {
         Lot lot = findByIdOrThrow(id);
-
-        // TODO Fase Bid: bloquear 409 se houver lance vinculados
+        lotHasBids(id);
 
         Category category = categoryService.findByIdOrThrow(request.categoryId());
 
@@ -59,12 +61,20 @@ public class LotService {
     @Transactional
     public void delete(UUID id) {
         Lot lot = findByIdOrThrow(id);
-        // TODO Fase Bid: bloquear 409 se houver lance vinculados
+        lotHasBids(id);
 
         repository.delete(lot);
     }
 
     public Lot findByIdOrThrow(UUID id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Lote"));
+    }
+
+    private void lotHasBids(UUID lotId) {
+        var hasBids = bidRepository.existsByLotId(lotId);
+
+        if (hasBids) {
+            throw new LotHasBidsException();
+        }
     }
 }
