@@ -1,9 +1,8 @@
 package br.com.leje.lancecerto.auction;
 
+import br.com.leje.lancecerto.shared.exception.InvalidStatusTransitionException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -35,6 +34,15 @@ public class Auction {
     private Instant endDate;
 
     @Enumerated(EnumType.STRING)
+    @Setter(AccessLevel.NONE)
     @Column(name = "status", nullable = false)
     private AuctionStatus status = AuctionStatus.SCHEDULED;
+
+    public void transitionTo(AuctionStatus target) {
+        if(!this.status.canTransitionTo(target)) {
+            throw new InvalidStatusTransitionException(this.status.name(), target.name());
+        }
+
+        this.status = target;
+    }
 }

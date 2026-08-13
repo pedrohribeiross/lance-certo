@@ -47,7 +47,7 @@ public class AuctionService {
     @Transactional
     public AuctionResponse updateStatus(UUID id, AuctionUpdateStatusRequest request) {
         Auction auction = findByIdOrThrow(id);
-        auction.setStatus(request.status());
+        auction.transitionTo(request.status());
 
         return mapper.toResponse(repository.save(auction));
     }
