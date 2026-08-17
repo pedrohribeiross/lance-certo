@@ -8,6 +8,7 @@ import br.com.leje.lancecerto.category.CategoryService;
 import br.com.leje.lancecerto.lot.dto.LotCreateRequest;
 import br.com.leje.lancecerto.lot.dto.LotResponse;
 import br.com.leje.lancecerto.lot.dto.LotUpdateRequest;
+import br.com.leje.lancecerto.lot.dto.LotUpdateStatusRequest;
 import br.com.leje.lancecerto.shared.exception.LotHasBidsException;
 import br.com.leje.lancecerto.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,14 @@ public class LotService {
 
         lot.setDescription(request.description());
         lot.setCategory(category);
+
+        return mapper.toResponse(repository.save(lot));
+    }
+
+    @Transactional
+    public LotResponse updateStatus(UUID id, LotUpdateStatusRequest request) {
+        Lot lot = findByIdOrThrow(id);
+        lot.transitionTo(request.status());
 
         return mapper.toResponse(repository.save(lot));
     }
