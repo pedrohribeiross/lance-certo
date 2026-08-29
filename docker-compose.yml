@@ -1,0 +1,15 @@
+services:
+  db-lance-certo:
+    image: postgres:16
+    container_name: lance-certo-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    volumes:
+      - db_lance_certo_data:/var/lib/postgresql/data
+
+volumes:
+  db_lance_certo_data:
