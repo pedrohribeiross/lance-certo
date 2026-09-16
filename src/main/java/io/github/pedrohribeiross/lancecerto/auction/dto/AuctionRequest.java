@@ -25,7 +25,7 @@ public record AuctionRequest(
         Instant endDate
 ) {
     @AssertTrue(message = "A data de término deve ser posterior à de início")
-    public boolean isEndDate() {
+    public boolean isEndDateAfterStartDate() {
         if (startDate == null || endDate == null) return true;
 
         return endDate.isAfter(startDate);
