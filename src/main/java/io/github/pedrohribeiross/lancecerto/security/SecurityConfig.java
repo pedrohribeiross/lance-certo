@@ -24,7 +24,7 @@ public class SecurityConfig {
     private RSAPublicKey publicKey;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JsonAuthenticationEntryPoint entryPoint) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
@@ -36,8 +36,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(new RoleClaimAuthenticationConverter()))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(entryPoint)
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(new RoleClaimAuthenticationConverter()))
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
