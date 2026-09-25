@@ -4,6 +4,7 @@ import io.github.pedrohribeiross.lancecerto.support.IntegrationTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -11,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static io.github.pedrohribeiross.lancecerto.support.web.ErrorResponseMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ProtectedRoutesInventoryTest extends IntegrationTest {
@@ -85,14 +87,16 @@ public class ProtectedRoutesInventoryTest extends IntegrationTest {
     @MethodSource("publicItemRoutes")
     void shouldReturnItemNotFoundResponseWhenPublicItemRouteIsRequestedWithoutAToken(Route route) throws Exception {
         mockMvc.perform(build(route))
-                .andExpect(status().isNotFound());
+                .andExpect(errorResponse(HttpStatus.NOT_FOUND))
+                .andExpect(hasOnlyErrorResponseFields());
     }
 
     @ParameterizedTest(name = "{0} should return a 401 response when the protected route is requested without a token")
     @MethodSource("protectedRoutes")
     void shouldReturnUnauthorizedResponseWhenProtectedRouteIsRequestedWithoutAToken(Route route) throws Exception {
         mockMvc.perform(build(route))
-                .andExpect(status().isUnauthorized());
+                .andExpect(unauthorizedErrorResponse())
+                .andExpect(hasOnlyErrorResponseFields());
     }
 
     private MockHttpServletRequestBuilder build(Route route) {
