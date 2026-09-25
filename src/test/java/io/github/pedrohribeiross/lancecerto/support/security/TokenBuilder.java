@@ -2,6 +2,7 @@ package io.github.pedrohribeiross.lancecerto.support.security;
 
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -10,14 +11,14 @@ import java.util.UUID;
 public class TokenBuilder {
 
     private final TestTokenFactory tokenFactory;
+    private final Clock clock = Clock.systemUTC();
 
     // valores padrões: um ‘token’ válido, sem papéis, válido por 1 hora
     private String subject = UUID.randomUUID().toString();
     private List<String> roles = List.of();
-    private Instant issuedAt = Instant.now();
+    private Instant issuedAt = clock.instant();
     private Duration expired = Duration.ofHours(1);
     private String issuer;
-
 
     public TokenBuilder(TestTokenFactory tokenFactory) {
         this.tokenFactory = tokenFactory;
@@ -39,7 +40,7 @@ public class TokenBuilder {
     }
 
     public TokenBuilder expired() {
-        this.issuedAt = Instant.now().minus(Duration.ofHours(2));
+        this.issuedAt = clock.instant().minus(Duration.ofHours(2));
         this.expired = Duration.ofHours(1);
         return this;
     }
