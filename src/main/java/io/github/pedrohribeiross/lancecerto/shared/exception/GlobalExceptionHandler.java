@@ -2,6 +2,8 @@ package io.github.pedrohribeiross.lancecerto.shared.exception;
 
 import io.github.pedrohribeiross.lancecerto.shared.dto.ErrorResponse;
 import io.github.pedrohribeiross.lancecerto.shared.dto.ValidationError;
+import io.github.pedrohribeiross.lancecerto.shared.error.ErrorResponseFactory;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.core.PropertyReferenceException;
@@ -14,13 +16,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    private final ErrorResponseFactory errorFactory;
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,8 +44,9 @@ public class GlobalExceptionHandler {
                     return new ValidationError(field, message);
                 })
                 .toList();
+        var body = errorFactory.build(HttpStatus.BAD_REQUEST, "Um ou mais campos estão inválidos", validationErrors);
 
-        return build(HttpStatus.BAD_REQUEST, "Um ou mais campos estão inválidos", validationErrors);
+        return ResponseEntity.badRequest().body(body);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -75,22 +79,6 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
-        return build(status, message, null);
-    }
-
-    private ResponseEntity<ErrorResponse> build(
-            HttpStatus status,
-            String message,
-            List<ValidationError> fieldErrors
-    ) {
-        ErrorResponse body = new ErrorResponse(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                fieldErrors
-        );
-
-        return ResponseEntity.status(status).body(body);
+        return ResponseEntity.status(status).body(errorFactory.build(status, message));
     }
 }
