@@ -11,17 +11,25 @@ public final class Auctions {
     private Auctions() {
     }
 
-    public static Auction active() {
+    public static Auction with(String title, AuctionStatus status) {
         Instant now = Instant.now();
 
         return new Auction(
                 null,
-                "mock Title",
+                title,
                 "mock description",
                 "mock principal",
                 now.minus(1, ChronoUnit.HOURS),
                 now.plus(7, ChronoUnit.DAYS),
-                AuctionStatus.ACTIVE
+                status
         );
+    }
+
+    public static Auction active() {
+        return with("mock Title", AuctionStatus.ACTIVE);
+    }
+
+    public static Auction scheduled() {
+        return with("mock Title", AuctionStatus.SCHEDULED);
     }
 }

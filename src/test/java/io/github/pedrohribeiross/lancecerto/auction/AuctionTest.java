@@ -1,6 +1,7 @@
 package io.github.pedrohribeiross.lancecerto.auction;
 
 import io.github.pedrohribeiross.lancecerto.shared.exception.InvalidStatusTransitionException;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Auctions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +16,7 @@ class AuctionTest {
 
     @BeforeEach
     void setUp() {
-        auction = new Auction();
+        auction = Auctions.scheduled();
     }
 
     @Test

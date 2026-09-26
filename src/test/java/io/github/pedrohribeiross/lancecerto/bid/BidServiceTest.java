@@ -7,9 +7,12 @@ import io.github.pedrohribeiross.lancecerto.bid.dto.BidResponse;
 import io.github.pedrohribeiross.lancecerto.category.Category;
 import io.github.pedrohribeiross.lancecerto.lot.Lot;
 import io.github.pedrohribeiross.lancecerto.lot.LotService;
-import io.github.pedrohribeiross.lancecerto.lot.LotStatus;
 import io.github.pedrohribeiross.lancecerto.shared.exception.AuctionNotActiveException;
 import io.github.pedrohribeiross.lancecerto.shared.exception.BidTooLowException;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Auctions;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Categories;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Lots;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Users;
 import io.github.pedrohribeiross.lancecerto.user.User;
 import io.github.pedrohribeiross.lancecerto.user.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +59,7 @@ class BidServiceTest {
 
             Lot lot = makeLotWithAuction(AuctionStatus.ACTIVE);
 
-            User user = new User();
+            User user = Users.any();
             BidRequest request = new BidRequest(new BigDecimal("12000"), userId);
             Bid bid = new Bid();
             BidResponse expected = mock(BidResponse.class);
@@ -115,11 +117,11 @@ class BidServiceTest {
         }
 
         private Lot makeLotWithAuction(AuctionStatus auctionStatus) {
-            Auction auction = new Auction(null, "mock title", "mock description", "mock principal", Instant.now(), Instant.now(), auctionStatus);
+            Auction auction = Auctions.with("mock title", auctionStatus);
 
-            Category category = new Category();
+            Category category = Categories.any();
 
-            return new Lot(null, "mock description", new BigDecimal("10000"), new BigDecimal("10000"), new BigDecimal("100"), LotStatus.AVAILABLE, category, auction);
+            return Lots.openFor(auction, category, new BigDecimal("10000"), new BigDecimal("100"));
         }
     }
 }

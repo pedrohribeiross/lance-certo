@@ -7,7 +7,12 @@ public final class Categories {
     private Categories() {
     }
 
-    public static Category any() {
-        return new Category(null, "Categoria");
+    public static Category with(String name) {
+        return new Category(null, name);
     }
+
+    public static Category any() {
+        return with("Categoria");
+    }
+
 }

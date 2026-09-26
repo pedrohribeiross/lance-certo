@@ -1,8 +1,9 @@
 package io.github.pedrohribeiross.lancecerto.lot;
 
 import io.github.pedrohribeiross.lancecerto.auction.Auction;
-import io.github.pedrohribeiross.lancecerto.auction.AuctionStatus;
 import io.github.pedrohribeiross.lancecerto.category.Category;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Auctions;
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Categories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,15 +39,13 @@ class LotSpecificationsTest {
 
     @BeforeEach
     void setUp() {
-        Category categoryVehicle = new Category();
-        categoryVehicle.setName("Vehicle");
+        Category categoryVehicle = Categories.with("Vehicle");
         entityManager.persist(categoryVehicle);
 
-        categoryOther = new Category();
-        categoryOther.setName("Other");
+        categoryOther = Categories.with("Other");
         entityManager.persist(categoryOther);
 
-        auction = new Auction(null, "mock title", "mock description", "mock principal", Instant.now(), Instant.now(), AuctionStatus.ACTIVE);
+        auction = Auctions.active();
         entityManager.persist(auction);
 
         entityManager.persist(makeLot("Notebook Dell", new BigDecimal("15000"), LotStatus.AVAILABLE, categoryOther));

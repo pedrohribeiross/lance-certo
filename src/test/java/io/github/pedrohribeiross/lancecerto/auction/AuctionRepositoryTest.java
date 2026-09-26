@@ -1,5 +1,6 @@
 package io.github.pedrohribeiross.lancecerto.auction;
 
+import io.github.pedrohribeiross.lancecerto.support.fixtures.Auctions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,11 +29,11 @@ class AuctionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        entityManager.persist(makeAuction("Veículos e motos", AuctionStatus.ACTIVE));
-        entityManager.persist(makeAuction("Embarcações", AuctionStatus.SCHEDULED));
-        entityManager.persist(makeAuction("Eletrônicos", AuctionStatus.SCHEDULED));
-        entityManager.persist(makeAuction("Imóveis", AuctionStatus.CLOSED));
-        entityManager.persist(makeAuction("Maquinas e equipamentos", AuctionStatus.CLOSED));
+        entityManager.persist(Auctions.with("Veículos e motos", AuctionStatus.ACTIVE));
+        entityManager.persist(Auctions.with("Embarcações", AuctionStatus.SCHEDULED));
+        entityManager.persist(Auctions.with("Eletrônicos", AuctionStatus.SCHEDULED));
+        entityManager.persist(Auctions.with("Imóveis", AuctionStatus.CLOSED));
+        entityManager.persist(Auctions.with("Maquinas e equipamentos", AuctionStatus.CLOSED));
         entityManager.flush();
         entityManager.clear();
     }
@@ -72,9 +71,5 @@ class AuctionRepositoryTest {
         Page<Auction> page = repository.findAllByStatusFilter(AuctionStatus.CANCELLED, pageable);
 
         assertThat(page.getContent()).isEmpty();
-    }
-
-    private Auction makeAuction(String title, AuctionStatus status) {
-        return new Auction(null, title, "mock description", "mock principal", Instant.now(), Instant.now(), status);
     }
 }
